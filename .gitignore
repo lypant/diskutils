@@ -1,0 +1,8 @@
+# This is a comment
+
+# Tags file
+tags
+
+# Vim temporary files
+*.swp
+
