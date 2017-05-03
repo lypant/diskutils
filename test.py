@@ -32,22 +32,69 @@ def createPartitions():
     sda.writePartitionTable()
     return Command(
         sda.getBashCommandString(),
-        'Create partitions') 
+        'Create partitions')
 
 def checkCreatedPartitionsCount():
     return Command(
         checkPartitionsCountString('/dev/sda', 7),
         'Check created partitions count')
 
+def createBootPartitionFileSystem():
+    return Command(
+        'mkfs.fat -F16 /dev/sda1',
+        'Create boot partition file system')
+
+def mountBootPartition():
+    return Command(
+        'mount /dev/sda1 /mnt',
+        'Mount boot partition')
+
+def createSyslinuxDirectory():
+    return Command(
+        'mkdir -p /mnt/boot/syslinux',
+        'Create syslinux directory')
+
+def copySyslinuxC32Files():
+    return Command(
+        'cp /usr/lib/syslinux/bios/*.c32 /mnt/boot/syslinux/',
+        'Copy syslinux *.c32 files')
+
+def installSyslinux():
+    return Command(
+        'syslinux --install /dev/sda1',
+        'Install syslinux')
+
+def writeMbr():
+    return Command(
+        'dd bs=440 count=1 if=/usr/lib/syslinux/bios/mbr.bin of=/dev/sda')
+
+def copySyslinuxConfig():
+    return Command(
+        'cp test_syslinux.cfg /mnt/boot/syslinux/syslinux.cfg',
+        'Copy syslinux config')
+
+def unmountBootPartition():
+    return Command(
+        'umount /dev/sda1',
+        'Unmount boot partition')
+
 def getPlan():
-    l = Logger('logs/diskutils.log')
+    l = Logger('logs/TestPartitioning.log')
 
     commands = [
             checkInitialPartitionsCount(),
             createPartitions(),
-            checkCreatedPartitionsCount()]
+            checkCreatedPartitionsCount(),
+            createBootPartitionFileSystem(),
+            mountBootPartition(),
+            createSyslinuxDirectory(),
+            copySyslinuxC32Files(),
+            installSyslinux(),
+            writeMbr(),
+            copySyslinuxConfig(),
+            unmountBootPartition()]
 
-    return Plan('TestPlan', commands, l)
+    return Plan('TestPartitioning', commands, l)
 
 
 if __name__ == '__main__':

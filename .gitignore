@@ -6,3 +6,8 @@ tags
 # Vim temporary files
 *.swp
 
+# Log files
+*.log
+
+# Compiled python code
+*.pyc
