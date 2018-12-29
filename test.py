@@ -1,6 +1,5 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-from __future__ import print_function
 from bcf.logger import Logger
 from bcf.command import Command
 from bcf.plan import Plan
